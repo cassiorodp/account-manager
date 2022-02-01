@@ -6,7 +6,7 @@ const errorConstructor = require('../utils/errorConstructor');
 // validação das entradas
 const usersSchema = Joi.object({
   userAccount: Joi.string().required(),
-  value: Joi.number().max(2000).required(),
+  value: Joi.number().min(1).max(2000).required(),
 });
 
 // transferencia para outro usuário

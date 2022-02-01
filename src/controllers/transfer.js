@@ -12,7 +12,7 @@ const transfer = async (req, res, next) => {
 
     return res.status(success).json(updatedAccount);
   } catch (error) {
-    console.error(`Create User -> ${error.message}`);
+    console.error(`Transfer -> ${error.message}`);
     next(error);
     return null;
   }

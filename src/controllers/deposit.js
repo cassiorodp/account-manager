@@ -12,7 +12,7 @@ const deposit = async (req, res, next) => {
 
     return res.status(success).json(updatedAccount);
   } catch (error) {
-    console.error(`Create User -> ${error.message}`);
+    console.error(`Deposit -> ${error.message}`);
     next(error);
     return null;
   }
