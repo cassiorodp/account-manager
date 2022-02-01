@@ -1,10 +1,11 @@
 {
   "name": "account_manager",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "bank account manager API",
+  "main": "./src/api/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node .",
+    "dev": "nodemon ."
   },
   "keywords": [],
   "author": "",
