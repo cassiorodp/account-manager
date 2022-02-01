@@ -47,10 +47,6 @@ describe('Enconta um usuário pelo CPF', () => {
       const user = await usersModel.findByRegistry(registry);
 
       expect(user).to.have.all.keys('_id', 'name', 'registry', 'password', 'balance');
-      // expect(user).to.have.property('name');
-      // expect(user).to.have.property('registry');
-      // expect(user).to.have.property('password');
-      // expect(user).to.have.property('balance');
     });
   });
 
