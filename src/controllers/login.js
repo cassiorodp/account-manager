@@ -6,9 +6,9 @@ const secret = 'afgweqrtewt34124';
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { registry, password } = req.body;
 
-    const user = await loginServices.login(email, password);
+    const user = await loginServices.login(registry, password);
 
     const jwtConfig = {
       expiresIn: '1h',
