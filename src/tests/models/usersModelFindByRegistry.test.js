@@ -41,7 +41,7 @@ describe('Enconta um usuário pelo CPF', () => {
 
       expect(response).to.be.a('object');
     });
-    // Testando se o usuário foi cadastrado após chamar a função `create`.
+    // Testando se o usuário foi encontrado após chamar a função `findByRegistry`.
     it('O objeto deve possuir as seguintes chaves', async () => {
       const { registry } = payloadUser;
       const user = await usersModel.findByRegistry(registry);
@@ -51,6 +51,15 @@ describe('Enconta um usuário pelo CPF', () => {
       expect(user).to.have.property('registry');
       expect(user).to.have.property('password');
       expect(user).to.have.property('balance');
+    });
+  });
+
+  describe('Quando não é encontrado', () => {
+    it('retorna null', async () => {
+      const wrongRegistry = '01512264222';
+      const response = await usersModel.findByRegistry(wrongRegistry);
+
+      expect(response).to.be.null;
     });
   });
 });
