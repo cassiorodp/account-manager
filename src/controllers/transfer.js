@@ -3,9 +3,8 @@ const { success } = require('../utils/dictionary');
 
 const transfer = async (req, res, next) => {
   try {
-    const {
-      userAccount, transferAccount, value,
-    } = req.body;
+    const { transferAccount, value } = req.body;
+    const { registry: userAccount } = req.user;
 
     // conta atualizada
     const updatedAccount = await transferService
