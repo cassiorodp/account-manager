@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const loginServices = require('../services/login');
 const { success } = require('../utils/dictionary');
 
+// secret utilizado "hard coded" somente para exemplo local
 const secret = 'afgweqrtewt34124';
 
 const login = async (req, res, next) => {

@@ -13,8 +13,10 @@ const login = async (registry, password) => {
 
   if (error) throw errorConstructor(unauthorized, 'All fields must be filled');
 
+  // encontrar usuário no banco de dados
   const user = await usersModel.findByRegistry(registry);
 
+  // retorno caso senha incorreta ou usuário não encontrado
   if (!user || user.password !== password) {
     throw errorConstructor(unauthorized, 'Incorrect CPF or password');
   }

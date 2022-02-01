@@ -12,13 +12,14 @@ const usersSchema = Joi.object({
 });
 
 // Criar usuário
-const create = async (name, registry, password, balance) => {
+const create = async (name, registry, password, balance = 0) => {
   const { error } = usersSchema.validate({
     name, registry, password, balance,
   });
 
   if (error) throw errorConstructor(badRequest, 'Invalid entries. Try again.');
 
+  // validar caso usuário já registrado
   const foundUser = await usersModel.findByRegistry(registry);
 
   if (foundUser) throw errorConstructor(conflict, 'CPF already registered');

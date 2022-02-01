@@ -1,6 +1,6 @@
 const connect = require('./connection');
 
-const create = async (name, registry, password, balance = 0) => {
+const create = async (name, registry, password, balance) => {
   const conn = await connect();
 
   const { insertedId } = await conn.collection('accounts').insertOne({
@@ -18,7 +18,19 @@ const findByRegistry = async (registry) => {
   return user;
 };
 
+const updateBalance = async (registry, value) => {
+  const conn = await connect();
+
+  await conn.collection('accounts').updateOne(
+    { registry },
+    { $inc: { balance: value } },
+  );
+
+  return true;
+};
+
 module.exports = {
   create,
   findByRegistry,
+  updateBalance,
 };
