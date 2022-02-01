@@ -11,7 +11,7 @@ const loginSchema = Joi.object({
 const login = async (registry, password) => {
   const { error } = loginSchema.validate({ registry, password });
 
-  if (error) throw errorConstructor(unauthorized, 'All fields must be filled');
+  if (error) throw errorConstructor(unauthorized, error.message);
 
   // encontrar usuário no banco de dados
   const user = await usersModel.findByRegistry(registry);

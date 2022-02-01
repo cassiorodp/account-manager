@@ -17,7 +17,7 @@ const create = async (name, registry, password, balance = 0) => {
     name, registry, password, balance,
   });
 
-  if (error) throw errorConstructor(badRequest, 'Invalid entries. Try again.');
+  if (error) throw errorConstructor(badRequest, error.message);
 
   // validar caso usuário já registrado
   const foundUser = await usersModel.findByRegistry(registry);

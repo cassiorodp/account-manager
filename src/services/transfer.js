@@ -16,7 +16,7 @@ const transfer = async (userAccount, transferAccount, value) => {
     userAccount, transferAccount, value,
   });
 
-  if (error) throw errorConstructor(badRequest, 'Invalid entries. Try again.');
+  if (error) throw errorConstructor(badRequest, error.message);
 
   // verificar saldo
   const { balance } = await usersModel.findByRegistry(userAccount);

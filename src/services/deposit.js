@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const usersModel = require('../models/users');
-const { badRequest, forbidden } = require('../utils/dictionary');
+const { badRequest } = require('../utils/dictionary');
 const errorConstructor = require('../utils/errorConstructor');
 
 // validação das entradas
@@ -15,10 +15,8 @@ const deposit = async (userAccount, value) => {
     userAccount, value,
   });
 
-  // validar deposito acima de 2000
-  if (error.message.startsWith('"value"')) throw errorConstructor(forbidden, error.message);
   // validar entradas incorretas
-  if (error) throw errorConstructor(badRequest, 'Invalid entries. Try again.');
+  if (error) throw errorConstructor(badRequest, error.message);
 
   // depositar valor
   await usersModel.updateBalance(userAccount, value);
