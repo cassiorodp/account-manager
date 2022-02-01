@@ -25,6 +25,7 @@ module.exports = async (req, res, next) => {
     req.user = user;
 
     next();
+    return null;
   } catch (error) {
     return res.status(unauthorized).json({ message: error.message });
   }

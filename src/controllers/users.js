@@ -11,8 +11,9 @@ const createUser = async (req, res, next) => {
 
     return res.status(created).json(newUser);
   } catch (error) {
-    console.log(`Create User -> ${error.message}`);
+    console.error(`Create User -> ${error.message}`);
     next(error);
+    return null;
   }
 };
 

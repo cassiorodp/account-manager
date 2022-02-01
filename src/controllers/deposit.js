@@ -1,14 +1,14 @@
-const transferService = require('../services/transfer');
+const depositService = require('../services/deposit');
 const { success } = require('../utils/dictionary');
 
-const transfer = async (req, res, next) => {
+const deposit = async (req, res, next) => {
   try {
-    const { transferAccount, value } = req.body;
+    const { value } = req.body;
     const { registry: userAccount } = req.user;
 
     // conta atualizada
-    const updatedAccount = await transferService
-      .transfer(userAccount, transferAccount, value);
+    const updatedAccount = await depositService
+      .deposit(userAccount, value);
 
     return res.status(success).json(updatedAccount);
   } catch (error) {
@@ -19,5 +19,5 @@ const transfer = async (req, res, next) => {
 };
 
 module.exports = {
-  transfer,
+  deposit,
 };

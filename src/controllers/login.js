@@ -22,8 +22,9 @@ const login = async (req, res, next) => {
 
     return res.status(success).json({ token });
   } catch (error) {
-    console.log(`Login -> ${error.message}`);
+    console.error(`Login -> ${error.message}`);
     next(error);
+    return null;
   }
 };
 
