@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 const usersModel = require('../models/users');
 const { unauthorized } = require('../utils/dictionary');
+require('dotenv').config();
 
-const secret = 'afgweqrtewt34124';
+const secret = process.env.SECRET;
 
 module.exports = async (req, res, next) => {
   const token = req.headers.authorization;

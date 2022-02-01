@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const loginServices = require('../services/login');
 const { success } = require('../utils/dictionary');
+require('dotenv').config();
 
 // secret utilizado "hard coded" somente para exemplo local
-const secret = 'afgweqrtewt34124';
+const secret = process.env.SECRET;
 
 const login = async (req, res, next) => {
   try {
