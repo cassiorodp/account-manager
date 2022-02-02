@@ -108,6 +108,10 @@ describe('POST /login', () => {
         });
     });
 
+    after(async () => {
+      await connectionMock.db('bank_accounts').collection('accounts').drop();
+    });
+
     it('retorna código de status "200"', () => {
       expect(response).to.have.status(success);
     });
