@@ -58,6 +58,7 @@ describe('Cria um novo usuário no banco de dados', () => {
   });
 
   describe('quando o usuário é inserido com sucesso', () => {
+    // é simulado o retorno da função `create`
     before(() => {
       const ID_EXAMPLE = '604cb554311d68f491ba5781';
 
