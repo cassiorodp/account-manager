@@ -1,5 +1,4 @@
-node_modules/
-
-.nyc_output
-
+# dotenv environment variable files
 .env
+# Dependency directories
+node_modules/
