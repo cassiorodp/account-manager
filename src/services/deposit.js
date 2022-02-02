@@ -18,11 +18,8 @@ const deposit = async (userAccount, value) => {
   // validar entradas incorretas
   if (error) throw errorConstructor(badRequest, error.message);
 
-  // depositar valor
-  await usersModel.updateBalance(userAccount, value);
-
-  // conta com valores atualizados
-  const { balance: updatedBalance, name } = await usersModel.findByRegistry(userAccount);
+  // depositar valor e retornar valores atualizados
+  const { balance: updatedBalance, name } = await usersModel.updateBalance(userAccount, value);
 
   // retornar saldo atualizado
   return { updatedBalance, name };
