@@ -7,7 +7,7 @@ const errorConstructor = require('../utils/errorConstructor');
 const usersSchema = Joi.object({
   userAccount: Joi.string().required(),
   transferAccount: Joi.string().required(),
-  value: Joi.number().min(1),
+  value: Joi.number().min(1).required(),
 });
 
 // transferencia para outro usuário
