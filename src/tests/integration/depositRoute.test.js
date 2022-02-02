@@ -12,7 +12,7 @@ const { expect } = chai;
 const { MongoClient } = require('mongodb');
 const { getConnection } = require('../models/mongoMockConnection');
 const server = require('../../api/app');
-const { unauthorized } = require('../../utils/dictionary');
+const { unauthorized, badRequest } = require('../../utils/dictionary');
 
 describe('POST /deposit', () => {
   let connectionMock;
@@ -26,15 +26,15 @@ describe('POST /deposit', () => {
     MongoClient.connect.restore();
   });
 
-  describe('Quando a senha não é informada', () => {
+  describe('Quando não está autenticado', () => {
     let response;
     const payloadUser = {
-      registry: '011312252226',
+      value: 1000,
     };
 
     before(async () => {
       response = await chai.request(server)
-        .post('/login')
+        .post('/deposit')
         .send(payloadUser);
     });
 
@@ -50,26 +50,46 @@ describe('POST /deposit', () => {
       expect(response.body).to.have.property('message');
     });
 
-    it('a propriedade "message" possui a mensagem ""password" is required"', () => {
-      expect(response.body.message).to.be.equal('"password" is required');
+    it('a propriedade "message" possui a mensagem "missing auth token"', () => {
+      expect(response.body.message).to.be.equal('missing auth token');
     });
   });
 
-  describe('Quando o CPF informado não existe ou senha é inválida', () => {
+  describe('Quando é um valor acima de R$2000,00', () => {
     let response;
+    const request = {
+      value: 2001,
+    };
     const payloadUser = {
-      registry: '01131222222',
-      password: '000000',
+      name: 'Cássio Rodrigues Pereira',
+      registry: '011312252226',
+      password: '12345',
+      balance: 0,
     };
 
     before(async () => {
-      response = await chai.request(server)
+      // simulando uma conta já existente
+      const accountCollection = connectionMock.db('bank_accounts').collection('accounts');
+      await accountCollection.insertOne(payloadUser);
+
+      // primeiro, é armazenado o token para simular um usuário autenticado
+      const token = await chai.request(server)
         .post('/login')
-        .send(payloadUser);
+        .send({
+          registry: '011312252226',
+          password: '12345',
+        })
+        .then((res) => res.body.token);
+
+      // após, é enviado o token no header "autorization"
+      response = await chai.request(server)
+        .post('/deposit')
+        .send(request)
+        .set('authorization', token);
     });
 
-    it('retorna código de status "401"', () => {
-      expect(response).to.have.status(unauthorized);
+    it('retorna código de status "400"', () => {
+      expect(response).to.have.status(badRequest);
     });
 
     it('retorna um objeto no body', () => {
@@ -80,8 +100,8 @@ describe('POST /deposit', () => {
       expect(response.body).to.have.property('message');
     });
 
-    it('a propriedade "message" possui a mensagem "Incorrect CPF or password"', () => {
-      expect(response.body.message).to.be.equal('Incorrect CPF or password');
+    it('a propriedade "message" possui a mensagem ""value" must be less than or equal to 2000"', () => {
+      expect(response.body.message).to.be.equal('"value" must be less than or equal to 2000');
     });
   });
 });
