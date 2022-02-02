@@ -55,46 +55,14 @@ describe('Logar com um usuário', () => {
     });
   });
 
-  // describe('quando o usuário é inserido com sucesso', () => {
-  //   before(() => {
-  //     const ID_EXAMPLE = '604cb554311d68f491ba5781';
+  describe('quando o usuário é logado com sucesso', () => {
+    it('retorna um objeto', async () => {
+      const { registry, password } = payloadUser;
 
-  //     sinon.stub(usersModel, 'create')
-  //       .resolves(ID_EXAMPLE);
-  //   });
+      const response = await loginService.login(registry, password);
 
-  //   // Restauraremos a função `create` original após os testes.
-  //   after(() => {
-  //     usersModel.create.restore();
-  //   });
-
-  //   it('retorna um objeto', async () => {
-  //     const anotherUser = {
-  //       name: 'another user',
-  //       registry: '00000000000',
-  //       password: '12345',
-  //       balance: 0,
-  //     };
-  //     const {
-  //       name, registry, password, balance,
-  //     } = anotherUser;
-  //     const response = await usersService.create(name, registry, password, balance);
-  //     expect(response).to.be.a('object');
-  //   });
-
-  //   it('tal objeto possui uma chave "user" com o id retornado da camada model', async () => {
-  //     const anotherUser = {
-  //       name: 'another user',
-  //       registry: '00000000000',
-  //       password: '12345',
-  //       balance: 0,
-  //     };
-  //     const {
-  //       name, registry, password, balance,
-  //     } = anotherUser;
-  //     const response = await usersService.create(name, registry, password, balance);
-
-  //     expect(response.user).to.have.property('_id');
-  //   });
-  // });
+      expect(response).to.be.a('object');
+      expect(response).to.have.all.keys('_id', 'name', 'registry', 'password', 'balance');
+    });
+  });
 });
