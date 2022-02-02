@@ -10,12 +10,11 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 const { MongoClient } = require('mongodb');
-const jwt = require('jsonwebtoken');
 const { getConnection } = require('../models/mongoMockConnection');
 const server = require('../../api/app');
-const { unauthorized, success } = require('../../utils/dictionary');
+const { unauthorized } = require('../../utils/dictionary');
 
-describe('POST /login', () => {
+describe('POST /deposit', () => {
   let connectionMock;
 
   before(async () => {
@@ -83,48 +82,6 @@ describe('POST /login', () => {
 
     it('a propriedade "message" possui a mensagem "Incorrect CPF or password"', () => {
       expect(response.body.message).to.be.equal('Incorrect CPF or password');
-    });
-  });
-
-  describe('Quando os dados são validos', () => {
-    let response;
-    const payloadUser = {
-      name: 'Cássio Rodrigues Pereira',
-      registry: '011312252226',
-      password: '12345',
-      balance: 0,
-    };
-
-    before(async () => {
-      // simulando uma conta já existente
-      const accountCollection = connectionMock.db('bank_accounts').collection('accounts');
-      await accountCollection.insertOne(payloadUser);
-
-      response = await chai.request(server)
-        .post('/login')
-        .send({
-          registry: '011312252226',
-          password: '12345',
-        });
-    });
-
-    it('retorna código de status "200"', () => {
-      expect(response).to.have.status(success);
-    });
-
-    it('retorna um objeto no body', () => {
-      expect(response.body).to.be.an('object');
-    });
-
-    it('objeto de resposta possui a propriedade "token"', () => {
-      expect(response.body).to.have.property('token');
-    });
-
-    it('a propriedade "token" deve conter um token JWT com o registry usado no login no seu payload', () => {
-      const { registry } = payloadUser;
-      const { token } = response.body;
-      const payload = jwt.decode(token);
-      expect(payload.data.registry).to.be.equal(registry);
     });
   });
 });
