@@ -12,7 +12,7 @@ const { expect } = chai;
 const { MongoClient } = require('mongodb');
 const { getConnection } = require('../models/mongoMockConnection');
 const server = require('../../api/app');
-const { unauthorized, badRequest } = require('../../utils/dictionary');
+const { unauthorized, badRequest, success } = require('../../utils/dictionary');
 
 describe('POST /deposit', () => {
   let connectionMock;
@@ -102,6 +102,57 @@ describe('POST /deposit', () => {
 
     it('a propriedade "message" possui a mensagem ""value" must be less than or equal to 2000"', () => {
       expect(response.body.message).to.be.equal('"value" must be less than or equal to 2000');
+    });
+  });
+
+  describe('Quando é um valor abaixo de R$2000,00', () => {
+    let response;
+    const request = {
+      value: 2000,
+    };
+    const payloadUser = {
+      name: 'Cássio Rodrigues Pereira',
+      registry: '011312252226',
+      password: '12345',
+      balance: 0,
+    };
+
+    before(async () => {
+      // simulando uma conta já existente
+      const accountCollection = connectionMock.db('bank_accounts').collection('accounts');
+      await accountCollection.insertOne(payloadUser);
+
+      // primeiro, é armazenado o token para simular um usuário autenticado
+      const token = await chai.request(server)
+        .post('/login')
+        .send({
+          registry: '011312252226',
+          password: '12345',
+        })
+        .then((res) => res.body.token);
+
+      // após, é enviado o token no header "autorization"
+      response = await chai.request(server)
+        .post('/deposit')
+        .send(request)
+        .set('authorization', token);
+    });
+
+    it('retorna código de status "200"', () => {
+      expect(response).to.have.status(success);
+    });
+
+    it('retorna um objeto no body', () => {
+      expect(response.body).to.be.an('object');
+    });
+
+    it('objeto de resposta possui a propriedade "updatedBalance" e "name"', () => {
+      expect(response.body).to.have.all.keys('updatedBalance', 'name');
+    });
+
+    it('a propriedade "updatedBalance" possui o valor atualizado da conta', () => {
+      const updateBalance = payloadUser.balance + request.value;
+      expect(response.body.updatedBalance).to.be.equal(updateBalance);
     });
   });
 });
