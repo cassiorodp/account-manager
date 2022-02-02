@@ -25,13 +25,10 @@ const transfer = async (userAccount, transferAccount, value) => {
   if (value > balance) throw errorConstructor(conflict, 'insufficient balance');
 
   // debitar valor a ser transferido da conta atual
-  await usersModel.updateBalance(userAccount, -value);
+  const { balance: updatedBalance, name } = await usersModel.updateBalance(userAccount, -value);
 
   // transferir valor para a conta escolhida
   await usersModel.updateBalance(transferAccount, value);
-
-  // conta atual com valores atualizados
-  const { balance: updatedBalance, name } = await usersModel.findByRegistry(userAccount);
 
   // retornar saldo atualizado
   return { updatedBalance, name };

@@ -26,7 +26,9 @@ const updateBalance = async (registry, value) => {
     { $inc: { balance: value } },
   );
 
-  return true;
+  const user = await conn.collection('accounts').findOne({ registry });
+
+  return user;
 };
 
 module.exports = {

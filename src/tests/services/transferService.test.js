@@ -5,7 +5,7 @@ const {
 } = require('mocha');
 const transferService = require('../../services/transfer');
 const userModel = require('../../models/users');
-const { badRequest } = require('../../utils/dictionary');
+const { badRequest, conflict } = require('../../utils/dictionary');
 
 describe('Transferir um valor', () => {
   const payloadUser = {
@@ -52,42 +52,59 @@ describe('Transferir um valor', () => {
     });
   });
 
-  // describe('quando o valor depositado é acima do limite', () => {
-  //   it('dispara um erro', async () => {
-  //     const forbiddenValue = 2001;
-  //     const { registry } = payloadUser;
+  describe('quando o valor informado é maior do que o saldo em conta', () => {
+    before(() => {
+      const balance = {
+        balance: 0,
+      };
+      sinon.stub(userModel, 'findByRegistry')
+        .resolves(balance);
+    });
 
-  //     try {
-  //       await depositService.deposit(registry, forbiddenValue);
-  //     } catch (error) {
-  //       expect(error.status).to.be.eql(badRequest);
-  //       expect(error.message).to.equal('"value" must be less than or equal to 2000');
-  //     }
-  //   });
-  // });
+    after(() => {
+      userModel.findByRegistry.restore();
+    });
 
-  // describe('quando o deposito é feito com sucesso', () => {
-  //   // é simulado o retorno da função `updateBalance`
-  //   before(() => {
-  //     const { name, value } = payloadUser;
-  //     const response = {};
-  //     response.name = name;
-  //     response.balance = value;
+    it('dispara um erro', async () => {
+      const { registry, otherRegistry, value } = payloadUser;
+      try {
+        await transferService.transfer(registry, otherRegistry, value);
+      } catch (error) {
+        expect(error.status).to.be.eql(conflict);
+        expect(error.message).to.equal('insufficient balance');
+      }
+    });
+  });
 
-  //     sinon.stub(userModel, 'findByRegistry')
-  //       .resolves(response);
-  //   });
-  //   after(() => {
-  //     userModel.findByRegistry.restore();
-  //   });
+  describe('quando a transferencia é feita com sucesso', () => {
+    before(() => {
+      const { value } = payloadUser;
+      const user = {
+        balance: 1000,
+      };
+      sinon.stub(userModel, 'findByRegistry')
+        .resolves(user);
 
-  //   it('retorna um objeto', async () => {
-  //     const { registry, value } = payloadUser;
+      const updatedUser = {
+        name: 'Cássio Rodrigues Pereira',
+        balance: user.balance - value,
+      };
+      sinon.stub(userModel, 'updateBalance')
+        .resolves(updatedUser);
+    });
 
-  //     const response = await depositService.deposit(registry, value);
+    after(() => {
+      userModel.findByRegistry.restore();
+    });
 
-  //     expect(response).to.be.an('object');
-  //     expect(response).to.have.all.keys('updatedBalance', 'name');
-  //   });
-  // });
+    it('retorna um objeto', async () => {
+      const { registry, otherRegistry, value } = payloadUser;
+
+      const response = await transferService.transfer(registry, otherRegistry, value);
+
+      expect(response).to.be.an('object');
+      expect(response.updatedBalance).to.eql(0);
+      expect(response.name).to.eql('Cássio Rodrigues Pereira');
+    });
+  });
 });
