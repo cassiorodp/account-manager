@@ -29,7 +29,7 @@ describe('Ao chamar o controller deposit', () => {
       next = sinon.stub().returns();
     });
 
-    /* Restauraremos a função `createUser` original após os testes. */
+    /* Restauraremos a função `transfer` original após os testes. */
     after(() => {
       transferService.transfer.restore();
     });

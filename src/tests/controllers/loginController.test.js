@@ -28,7 +28,7 @@ describe('Ao chamar o controller login', () => {
       next = sinon.stub().returns();
     });
 
-    /* Restauraremos a função `createUser` original após os testes. */
+    /* Restauraremos a função `login` original após os testes. */
     after(() => {
       loginService.login.restore();
     });

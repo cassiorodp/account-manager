@@ -75,7 +75,7 @@ describe('Ao chamar o controller createUser', () => {
       expect(response.status.calledWith(created)).to.be.equal(true);
     });
 
-    it('é chamado o json com a mensagem "Filme criado com sucesso!"', async () => {
+    it('é chamado o método "json" passando um objeto', async () => {
       await usersController.createUser(request, response);
 
       expect(response.json.calledWith(sinon.match.object)).to.be.equal(true);
