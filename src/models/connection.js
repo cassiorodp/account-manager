@@ -6,7 +6,8 @@ const OPTIONS = {
   useUnifiedTopology: true,
 };
 
-const MONGO_DB_URL = `mongodb://${process.env.HOST || 'localhost'}:27017`;
+// const MONGO_DB_URL = `mongodb://${process.env.HOST || 'localhost'}:27017`;
+const MONGO_DB_URL = process.env.MONGODB_URL || 'mongodb://localhost:27017';
 
 const DB_NAME = 'bank_accounts';
 
